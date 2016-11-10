@@ -224,3 +224,32 @@ matchCountsSeq.sortBy(_._2).foreach(println)
 matchCountsSeq.sortBy(_._2).reverse.foreach(println)
 //(false,5728201)
 //(true,20931)
+
+parsed.map(md => md.scores(0)).stats
+//res9: org.apache.spark.util.StatCounter = (count: 5749132, mean: NaN, stdev: NaN, max: NaN, min: NaN)
+import java.lang.Double.isNaN
+
+parsed.map(md => md.scores(0)).filter(!isNaN(_)).take(3)
+//res13: Array[Double] = Array(0.833333333333333, 1.0, 1.0)
+parsed.map(md => md.scores(0)).filter(!isNaN(_)).stats()
+//res15: org.apache.spark.util.StatCounter = (count: 5748125, mean: 0.712902, stdev: 0.388758, max: 1.000000, min: 0.000000)
+
+
+val stats = (0 until 9).map(i =>{
+  parsed.map(md => md.scores(i)).filter(!isNaN(_)).stats()
+})
+
+stats.foreach(println)
+/*
+(count: 5748125, mean: 0.712902, stdev: 0.388758, max: 1.000000, min: 0.000000)
+(count: 103698, mean: 0.900018, stdev: 0.271316, max: 1.000000, min: 0.000000)
+(count: 5749132, mean: 0.315628, stdev: 0.334234, max: 1.000000, min: 0.000000)
+(count: 2464, mean: 0.318413, stdev: 0.368492, max: 1.000000, min: 0.000000)
+(count: 5749132, mean: 0.955001, stdev: 0.207301, max: 1.000000, min: 0.000000)
+(count: 5748337, mean: 0.224465, stdev: 0.417230, max: 1.000000, min: 0.000000)
+(count: 5748337, mean: 0.488855, stdev: 0.499876, max: 1.000000, min: 0.000000)
+(count: 5748337, mean: 0.222749, stdev: 0.416091, max: 1.000000, min: 0.000000)
+(count: 5736289, mean: 0.005529, stdev: 0.074149, max: 1.000000, min: 0.000000)
+*/
+stats(1)
+//res17: org.apache.spark.util.StatCounter = (count: 103698, mean: 0.900018, stdev: 0.271316, max: 1.000000, min: 0.000000)
